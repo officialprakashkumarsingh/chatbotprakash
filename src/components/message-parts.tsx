@@ -718,14 +718,7 @@ export const ToolMessagePart = memo(
         );
       }
 
-      if (toolName === DefaultToolName.DartExecution) {
-        return (
-          <DartCodePreview
-            key={`${toolCallId}-${toolName}`}
-            {...(args as any)}
-          />
-        );
-      }
+
 
       if (toolName === SequentialThinkingToolName) {
         return (
@@ -760,6 +753,13 @@ export const ToolMessagePart = memo(
           case DefaultToolName.CreatePresentation:
             return (
               <PresentationPreview
+                key={`${toolCallId}-${toolName}`}
+                {...(args as any)}
+              />
+            );
+          case DefaultToolName.DartExecution:
+            return (
+              <DartCodePreview
                 key={`${toolCallId}-${toolName}`}
                 {...(args as any)}
               />
