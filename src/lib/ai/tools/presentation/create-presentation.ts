@@ -127,7 +127,7 @@ export const createPresentationTool = createTool({
           `;
           
           // Wrap list items in ul tags
-          slideContent = slideContent.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+          slideContent = slideContent.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
           break;
       }
 
