@@ -386,6 +386,11 @@ export function ChatMentionInputSuggestion({
           label = "python-execution";
           description = "Execute simple python code";
           break;
+
+        case DefaultToolName.CreatePresentation:
+          label = "presentation";
+          description = "Create interactive HTML presentations";
+          break;
       }
       return {
         id: toolName,

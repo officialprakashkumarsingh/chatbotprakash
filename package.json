@@ -102,6 +102,7 @@
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
     "remark-gfm": "^4.0.1",
+    "reveal.js": "^5.2.1",
     "server-only": "^0.0.1",
     "shiki": "^3.8.1",
     "sonner": "^2.0.6",
@@ -136,7 +137,10 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,json,mjs,ts,yaml,tsx,css}": ["pnpm format", "pnpm lint:fix"]
+    "*.{js,json,mjs,ts,yaml,tsx,css}": [
+      "pnpm format",
+      "pnpm lint:fix"
+    ]
   },
   "packageManager": "pnpm@10.2.1",
   "engines": {

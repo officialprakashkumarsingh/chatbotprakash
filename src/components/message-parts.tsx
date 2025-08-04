@@ -551,6 +551,19 @@ const SequentialThinkingToolInvocation = dynamic(
   },
 );
 
+const PresentationPreview = dynamic(
+  () =>
+    import("./tool-invocation/presentation-preview").then(
+      (mod) => mod.PresentationPreview,
+    ),
+  {
+    ssr: false,
+    loading,
+  },
+);
+
+
+
 // Local shortcuts for tool invocation approval/rejection
 const approveToolInvocationShortcut: Shortcut = {
   description: "approveToolInvocation",
@@ -696,6 +709,8 @@ export const ToolMessagePart = memo(
         );
       }
 
+
+
       if (toolName === SequentialThinkingToolName) {
         return (
           <SequentialThinkingToolInvocation
@@ -726,6 +741,14 @@ export const ToolMessagePart = memo(
                 {...(args as any)}
               />
             );
+          case DefaultToolName.CreatePresentation:
+            return (
+              <PresentationPreview
+                key={`${toolCallId}-${toolName}`}
+                {...(args as any)}
+              />
+            );
+
         }
       }
       return null;
