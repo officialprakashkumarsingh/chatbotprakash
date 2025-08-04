@@ -26,68 +26,143 @@ import { useCopy } from "@/hooks/use-copy";
 import { CodeBlock } from "ui/CodeBlock";
 
 export interface DartCodePreviewProps {
-  codeId: string;
-  language: string;
-  framework: string;
-  dartVersion: string;
-  description: string;
-  packages: string[];
-  dartPadUrl: string;
-  downloadLink: string;
-  instructions: string;
   code: string;
-  pubspec: string | null;
-  runCommands: {
-    dartpad: string;
-    local: string;
-    compile: string;
-  };
+  description?: string;
+  isFlutter?: boolean;
+  packages?: string[];
+  dartVersion?: string;
 }
 
 export function DartCodePreview(props: DartCodePreviewProps) {
   const { 
-    description, 
-    framework, 
-    dartVersion, 
-    packages, 
-    dartPadUrl, 
     code, 
-    pubspec, 
-    runCommands 
+    description = "Dart code example", 
+    isFlutter = false, 
+    packages = [], 
+    dartVersion = "3.0" 
   } = props;
   
   const { copy } = useCopy();
   const [copiedCode, setCopiedCode] = React.useState(false);
   const [copiedPubspec, setCopiedPubspec] = React.useState(false);
 
-  const isFlutter = framework === "flutter";
+  // Process the raw arguments to generate the formatted code and derived data
+  const processedData = React.useMemo(() => {
+    const codeId = Math.random().toString(36).substring(7);
+    
+    // Clean up and format the code
+    let formattedCode = code.trim();
+    
+    // Add main function if not present and not Flutter
+    if (!isFlutter && !formattedCode.includes('void main(') && !formattedCode.includes('main(')) {
+      // Wrap code in main function if it's not already there
+      if (!formattedCode.startsWith('import ') && !formattedCode.startsWith('library ')) {
+        formattedCode = `void main() {\n  ${formattedCode.split('\n').join('\n  ')}\n}`;
+      }
+    }
+
+    // For Flutter, ensure it has proper widget structure
+    if (isFlutter && !formattedCode.includes('class ') && !formattedCode.includes('Widget')) {
+      formattedCode = `import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('${description}')),
+        body: Center(
+          child: ${formattedCode.includes('Widget') ? formattedCode : `Text('${formattedCode}')`},
+        ),
+      ),
+    );
+  }
+}`;
+    }
+
+    // Generate pubspec.yaml content if packages are specified
+    let pubspecContent = "";
+    if (packages.length > 0) {
+      pubspecContent = `name: dart_example_${codeId}
+description: ${description}
+version: 1.0.0
+
+environment:
+  sdk: '>=${dartVersion} <4.0.0'
+  ${isFlutter ? 'flutter: ">=3.0.0"' : ''}
+
+dependencies:
+  ${isFlutter ? 'flutter:\n    sdk: flutter' : ''}
+  ${packages.map(pkg => {
+    // Handle package:version format
+    if (pkg.includes(':')) {
+      const [name, version] = pkg.split(':');
+      return `${name}: ^${version}`;
+    }
+    return `${pkg}: ^1.0.0`;
+  }).join('\n  ')}
+
+${isFlutter ? `dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true` : ''}`;
+    }
+
+    // Create DartPad URL for easy access
+    const dartPadUrl = `https://dartpad.dev/?null_safety=true${isFlutter ? '&run=dart&split=false' : ''}`;
+    
+    // Generate download link for the code
+    const downloadLink = `data:text/plain;charset=utf-8,${encodeURIComponent(formattedCode)}`;
+
+    const runCommands = {
+      dartpad: dartPadUrl,
+      local: isFlutter ? "flutter run" : "dart run main.dart",
+      compile: isFlutter ? "flutter build" : "dart compile exe main.dart"
+    };
+
+    return {
+      formattedCode,
+      pubspecContent: pubspecContent || null,
+      dartPadUrl,
+      downloadLink,
+      runCommands,
+      framework: isFlutter ? "flutter" : "console"
+    };
+  }, [code, description, isFlutter, packages, dartVersion]);
 
   const handleCopyCode = React.useCallback(() => {
-    copy(code);
+    copy(processedData.formattedCode);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
-  }, [copy, code]);
+  }, [copy, processedData.formattedCode]);
 
   const handleCopyPubspec = React.useCallback(() => {
-    if (pubspec) {
-      copy(pubspec);
+    if (processedData.pubspecContent) {
+      copy(processedData.pubspecContent);
       setCopiedPubspec(true);
       setTimeout(() => setCopiedPubspec(false), 2000);
     }
-  }, [copy, pubspec]);
+  }, [copy, processedData.pubspecContent]);
 
   const handleOpenDartPad = React.useCallback(() => {
-    window.open(dartPadUrl, '_blank');
-  }, [dartPadUrl]);
+    window.open(processedData.dartPadUrl, '_blank');
+  }, [processedData.dartPadUrl]);
 
   const handleDownload = React.useCallback(() => {
     const element = document.createElement('a');
-    element.href = `data:text/plain;charset=utf-8,${encodeURIComponent(code)}`;
+    element.href = processedData.downloadLink;
     element.download = `${description.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.dart`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-  }, [code, description]);
+  }, [processedData.downloadLink, description]);
 
   return (
     <Card className="flex flex-col bg-card">
@@ -155,7 +230,7 @@ export function DartCodePreview(props: DartCodePreviewProps) {
         <Tabs defaultValue="code" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="code">main.dart</TabsTrigger>
-            {pubspec && <TabsTrigger value="pubspec">pubspec.yaml</TabsTrigger>}
+            {processedData.pubspecContent && <TabsTrigger value="pubspec">pubspec.yaml</TabsTrigger>}
             <TabsTrigger value="commands">Run Commands</TabsTrigger>
           </TabsList>
           
@@ -174,14 +249,14 @@ export function DartCodePreview(props: DartCodePreviewProps) {
             </div>
             <div className="border rounded-lg overflow-hidden">
               <CodeBlock
-                code={code}
+                code={processedData.formattedCode}
                 lang="dart"
                 className="text-xs max-h-[400px] overflow-y-auto"
               />
             </div>
           </TabsContent>
           
-          {pubspec && (
+          {processedData.pubspecContent && (
             <TabsContent value="pubspec" className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">pubspec.yaml</span>
@@ -197,7 +272,7 @@ export function DartCodePreview(props: DartCodePreviewProps) {
               </div>
               <div className="border rounded-lg overflow-hidden">
                 <CodeBlock
-                  code={pubspec}
+                  code={processedData.pubspecContent}
                   lang="yaml"
                   className="text-xs max-h-[300px] overflow-y-auto"
                 />
@@ -224,7 +299,7 @@ export function DartCodePreview(props: DartCodePreviewProps) {
                 <h4 className="text-sm font-medium mb-2">💻 Local Development</h4>
                 <p className="text-xs text-muted-foreground mb-2">Run on your machine</p>
                 <div className="bg-muted rounded p-2 text-xs font-mono">
-                  {runCommands.local}
+                  {processedData.runCommands.local}
                 </div>
               </div>
               
@@ -232,7 +307,7 @@ export function DartCodePreview(props: DartCodePreviewProps) {
                 <h4 className="text-sm font-medium mb-2">📦 Compile & Build</h4>
                 <p className="text-xs text-muted-foreground mb-2">Create executable</p>
                 <div className="bg-muted rounded p-2 text-xs font-mono">
-                  {runCommands.compile}
+                  {processedData.runCommands.compile}
                 </div>
               </div>
             </div>
