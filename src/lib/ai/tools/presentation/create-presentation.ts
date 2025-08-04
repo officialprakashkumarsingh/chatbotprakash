@@ -301,41 +301,8 @@ export const createPresentationTool = createTool({
       slideCount: slides.length,
       theme,
       downloadLink,
-      instructions: `
-📊 **Presentation Created Successfully!**
-
-**${title}** (${slides.length} slides)
-- Theme: ${theme}
-- Interactive navigation enabled
-- Mobile-friendly touch controls
-- Keyboard shortcuts available
-
-**How to use:**
-1. Copy the generated HTML and save as a .html file
-2. Open in any modern web browser
-3. Use arrow keys or click controls to navigate
-4. Press 'ESC' for slide overview
-5. Press 'S' for speaker notes (if available)
-
-**Navigation:**
-- Arrow keys: Navigate slides
-- Space: Next slide  
-- Shift+Space: Previous slide
-- Home/End: First/Last slide
-- F: Fullscreen mode
-- ESC: Overview mode
-
-**Features included:**
-- Responsive design for all devices
-- Professional transitions and animations
-- Progress bar and navigation controls
-- Zoom functionality (Alt+Click)
-- Search functionality (Ctrl+Shift+F)
-- Print-friendly styling
-
-The presentation is ready to present locally or host on any web server!
-      `,
-      html: presentationHTML
+      html: presentationHTML,
+      instructions: "Presentation created successfully! Use the preview to view, download HTML file, or open in new window."
     };
   },
 });

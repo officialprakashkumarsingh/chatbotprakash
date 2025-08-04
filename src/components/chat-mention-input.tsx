@@ -386,6 +386,14 @@ export function ChatMentionInputSuggestion({
           label = "python-execution";
           description = "Execute simple python code";
           break;
+        case DefaultToolName.DartExecution:
+          label = "dart-execution";
+          description = "Generate Dart/Flutter code";
+          break;
+        case DefaultToolName.CreatePresentation:
+          label = "presentation";
+          description = "Create interactive HTML presentations";
+          break;
       }
       return {
         id: toolName,

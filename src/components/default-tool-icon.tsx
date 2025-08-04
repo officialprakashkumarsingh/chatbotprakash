@@ -10,6 +10,8 @@ import {
   CodeIcon,
   HammerIcon,
   TableOfContents,
+  PresentationIcon,
+  FileCode,
 } from "lucide-react";
 import { useMemo } from "react";
 
@@ -56,6 +58,12 @@ export function DefaultToolIcon({
     }
     if (name === DefaultToolName.PythonExecution) {
       return <CodeIcon className={cn("size-3.5 text-blue-400", className)} />;
+    }
+    if (name === DefaultToolName.DartExecution) {
+      return <FileCode className={cn("size-3.5 text-blue-600", className)} />;
+    }
+    if (name === DefaultToolName.CreatePresentation) {
+      return <PresentationIcon className={cn("size-3.5 text-purple-500", className)} />;
     }
     return <HammerIcon className={cn("size-3.5", className)} />;
   }, [name]);

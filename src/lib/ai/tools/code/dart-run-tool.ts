@@ -138,100 +138,6 @@ flutter:
     // Generate download link for the code
     const codeBlob = encodeURIComponent(formattedCode);
     const downloadLink = `data:text/plain;charset=utf-8,${codeBlob}`;
-    
-    // Create instructions based on type
-    const instructions = isFlutter ? `
-🎯 **Flutter Code Generated Successfully!**
-
-**${description}** (Dart ${dartVersion})
-- Type: Flutter UI Application  
-- Packages: ${packages.length > 0 ? packages.join(', ') : 'Flutter core only'}
-
-**How to run this Flutter code:**
-
-1. **DartPad (Recommended for quick testing):**
-   - Visit: ${dartPadUrl}
-   - Select "Flutter" mode
-   - Paste the code and click "Run"
-   - See live preview in browser
-
-2. **Local Flutter Development:**
-   \`\`\`bash
-   # Create new Flutter project
-   flutter create dart_example_${codeId}
-   cd dart_example_${codeId}
-   
-   # Replace lib/main.dart with the generated code
-   # If packages needed, update pubspec.yaml
-   
-   # Run the app
-   flutter run
-   \`\`\`
-
-3. **VS Code / Android Studio:**
-   - Create new Flutter project
-   - Replace main.dart content
-   - Press F5 or click "Run" button
-
-**Features included:**
-- Material Design components
-- Responsive layout
-- Hot reload support
-- Cross-platform compatibility (iOS, Android, Web, Desktop)
-
-**Next steps:**
-- Modify the UI in the build() method
-- Add state management with StatefulWidget
-- Include navigation, animations, or custom widgets
-- Test on different devices and screen sizes
-    ` : `
-🚀 **Dart Code Generated Successfully!**
-
-**${description}** (Dart ${dartVersion})
-- Type: Console Application
-- Packages: ${packages.length > 0 ? packages.join(', ') : 'Dart core only'}
-
-**How to run this Dart code:**
-
-1. **DartPad (Quick online testing):**
-   - Visit: ${dartPadUrl}
-   - Paste the code and click "Run"
-   - See output in console panel
-
-2. **Local Dart Development:**
-   \`\`\`bash
-   # Save code as main.dart
-   # Run directly
-   dart run main.dart
-   
-   # Or compile and run
-   dart compile exe main.dart
-   ./main.exe
-   \`\`\`
-
-3. **VS Code with Dart extension:**
-   - Create new .dart file
-   - Paste the code
-   - Press F5 or Ctrl+F5 to run
-
-4. **Command line with Dart SDK:**
-   \`\`\`bash
-   # Install Dart SDK from dart.dev
-   dart --version
-   dart run main.dart
-   \`\`\`
-
-**Features demonstrated:**
-- Modern Dart syntax with null safety
-- ${packages.length > 0 ? `External packages: ${packages.join(', ')}` : 'Core Dart libraries'}
-- Type-safe programming
-- Async/await if applicable
-
-**Learning resources:**
-- Official Dart docs: dart.dev
-- Dart packages: pub.dev
-- Language tour: dart.dev/language
-    `;
 
     return {
       success: true,
@@ -243,7 +149,7 @@ flutter:
       packages,
       dartPadUrl,
       downloadLink,
-      instructions,
+      instructions: "Dart code generated successfully! Use DartPad for quick testing or copy to your local project.",
       code: formattedCode,
       pubspec: pubspecContent || null,
       runCommands: {
