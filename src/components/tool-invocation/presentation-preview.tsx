@@ -11,15 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   Download, 
-  ExternalLink, 
   Eye, 
-  Presentation,
-  Monitor,
-  Smartphone,
-  FileText
+  Presentation
 } from "lucide-react";
 import { JsonViewPopup } from "../json-view-popup";
-import { useCopy } from "@/hooks/use-copy";
+
 
 export interface PresentationPreviewProps {
   title: string;
@@ -62,7 +58,7 @@ export function PresentationPreview(props: PresentationPreviewProps) {
     touch = true,
     embedded = false
   } = props;
-  const { copy, copied } = useCopy();
+
 
   // Process the raw arguments to generate the presentation HTML
   const processedData = React.useMemo(() => {
@@ -335,9 +331,7 @@ export function PresentationPreview(props: PresentationPreviewProps) {
     }
   }, [processedData.presentationHTML]);
 
-  const handleCopyHTML = React.useCallback(() => {
-    copy(processedData.presentationHTML);
-  }, [copy, processedData.presentationHTML]);
+
 
   return (
     <Card className="flex flex-col bg-card">
@@ -380,7 +374,7 @@ export function PresentationPreview(props: PresentationPreviewProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="flex gap-2 justify-center">
           <Button 
             onClick={handlePreview} 
             className="flex items-center gap-2"
@@ -397,55 +391,9 @@ export function PresentationPreview(props: PresentationPreviewProps) {
             <Download className="size-4" />
             Download
           </Button>
-          <Button 
-            onClick={handleCopyHTML} 
-            className="flex items-center gap-2"
-            variant="outline"
-          >
-            <FileText className="size-4" />
-            {copied ? 'Copied!' : 'Copy HTML'}
-          </Button>
-          <Button 
-            onClick={() => window.open('https://revealjs.com/', '_blank')} 
-            className="flex items-center gap-2"
-            variant="ghost"
-          >
-            <ExternalLink className="size-4" />
-            Reveal.js
-          </Button>
         </div>
 
-        {/* Features */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="flex flex-col items-center gap-1">
-            <Monitor className="size-5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Desktop Ready</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Smartphone className="size-5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Mobile Friendly</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Presentation className="size-5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Interactive</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <ExternalLink className="size-5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Shareable</span>
-          </div>
-        </div>
 
-        {/* Instructions */}
-        <div className="bg-muted/50 rounded-lg p-4">
-          <h4 className="text-sm font-medium mb-2">Usage Instructions:</h4>
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p>• Click &quot;Preview&quot; to open in new window</p>
-            <p>• Use arrow keys or click controls to navigate</p>
-            <p>• Press ESC for overview mode</p>
-            <p>• Press F for fullscreen presentation</p>
-            <p>• Download HTML file to host anywhere</p>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

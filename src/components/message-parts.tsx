@@ -562,16 +562,7 @@ const PresentationPreview = dynamic(
   },
 );
 
-const DartCodePreview = dynamic(
-  () =>
-    import("./tool-invocation/dart-code-preview").then(
-      (mod) => mod.DartCodePreview,
-    ),
-  {
-    ssr: false,
-    loading,
-  },
-);
+
 
 // Local shortcuts for tool invocation approval/rejection
 const approveToolInvocationShortcut: Shortcut = {
@@ -757,13 +748,7 @@ export const ToolMessagePart = memo(
                 {...(args as any)}
               />
             );
-          case DefaultToolName.DartExecution:
-            return (
-              <DartCodePreview
-                key={`${toolCallId}-${toolName}`}
-                {...(args as any)}
-              />
-            );
+
         }
       }
       return null;
